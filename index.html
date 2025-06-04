@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Heart’s Secret Confession</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Patrick Hand', cursive;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background: url('https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjU0NmJhdGNoMy1teW50LTM0LWJhZGdld2F0ZXJjb2xvcl8xLmpwZw.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #6a1b4d;
+      user-select: none;
+    }
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: inherit;
+      filter: blur(15px);
+      z-index: 0;
+      transform: scale(1.1);
+    }
+
+    /* Floating pastel hearts */
+    .heart {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: pink;
+      opacity: 0.7;
+      animation: floatUp linear infinite;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      transform-origin: center bottom;
+    }
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: pink;
+      border-radius: 50%;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .heart::before {
+      left: 0;
+      transform: translateX(0);
+    }
+    .heart::after {
+      left: 100%;
+      transform: translateX(-100%);
+    }
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(1) rotate(0deg);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.3) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Confetti container */
+    #confetti {
+      position: fixed;
+      pointer-events: none;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      overflow: visible;
+      z-index: 10;
+      display: none;
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background-color: #ff69b4;
+      opacity: 0.8;
+      animation: confetti-fall 3s linear forwards;
+      border-radius: 2px;
+      will-change: transform;
+    }
+    @keyframes confetti-fall {
+      0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(120vh) rotate(360deg);
+      }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      background: rgba(255 255 255 / 0.9);
+      padding: 35px 40px 45px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.15);
+      max-width: 650px;
+      width: 90%;
+      text-align: center;
+      transition: opacity 0.4s ease;
+    }
+
+    h2 {
+      color: #d81e5b;
+      font-weight: 700;
+      font-size: 28px;
+      min-height: 70px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Typing effect */
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+    @keyframes blinkCaret {
+      50% { border-color: transparent }
+    }
+    #question.typing {
+      border-right: 3px solid #d81e5b;
+      white-space: nowrap;
+      overflow: hidden;
+      animation: typing 1.8s steps(30, end), blinkCaret 0.75s step-end infinite;
+    }
+
+    .btn {
+      margin: 12px 15px;
+      padding: 14px 32px;
+      font-size: 18px;
+      border: none;
+      border-radius: 16px;
+      background-color: #d81e5b;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 5px 15px rgba(216,30,91,0.4);
+      user-select: none;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .btn:hover {
+      background-color: #ad1842;
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(173,24,66,0.7);
+    }
+
+    #gif {
+      margin-top: 28px;
+      max-width: 100%;
+      border-radius: 20px;
+      display: none;
+      box-shadow: 0 6px 20px rgba(216,30,91,0.3);
+    }
+
+    #whyBox {
+      margin-top: 20px;
+      display: none;
+    }
+
+    #whyInput {
+      width: 92%;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1.8px solid #d81e5b;
+      font-size: 17px;
+      font-family: 'Patrick Hand', cursive;
+      resize: vertical;
+      min-height: 80px;
+      outline-offset: 4px;
+      transition: border-color 0.3s ease;
+    }
+
+    #whyInput:focus {
+      border-color: #ff6fa3;
+    }
+
+    #submitWhy {
+      margin-top: 14px;
+      background-color: #d81e5b;
+      padding: 14px 32px;
+      font-size: 18px;
+    }
+
+    #finalMessage {
+      margin-top: 22px;
+      font-size: 22px;
+      font-style: italic;
+      white-space: pre-wrap;
+      color: #444;
+      min-height: 90px;
+    }
+
+    #restartBtn {
+      margin-top: 30px;
+      display: none;
+      background-color: #ff6fa3;
+      box-shadow: 0 5px 20px rgba(255,111,163,0.5);
+    }
+    #restartBtn:hover {
+      background-color: #e4558b;
+      box-shadow: 0 7px 25px rgba(228,85,139,0.7);
+    }
+
+    /* Small hearts near question */
+    .hearts-row {
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+    .hearts-row svg {
+      width: 28px;
+      height: 28px;
+      fill: #ff6fa3;
+      animation: heartbeat 1.6s ease-in-out infinite;
+      transform-origin: center;
+    }
+    .hearts-row svg:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+    .hearts-row svg:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container" id="container">
+    <div class="hearts-row" aria-hidden="true">
+      <!-- Cute hearts SVG -->
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6.5 3.5 5 5.5 5c1.54 0 3.04 1 3.57 2.36h1.87C13.46 6 14.96 5 16.5 5 18.5 5 20 6.5 20 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6.5 3.5 5 5.5 5c1.54 0 3.04 1 3.57 2.36h1.87C13.46 6 14.96 5 16.5 5 18.5 5 20 6.5 20 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6.5 3.5 5 5.5 5c1.54 0 3.04 1 3.57 2.36h1.87C13.46 6 14.96 5 16.5 5 18.5 5 20 6.5 20 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    </div>
+    <h2 id="question"></h2>
+    <div id="buttons">
+      <button class="btn" onclick="handleAnswer(true)">Yes</button>
+      <button class="btn" onclick="handleAnswer(false)">No</button>
+    </div>
+
+    <div id="whyBox">
+      <textarea id="whyInput" placeholder="Please tell me why..."></textarea><br />
+      <button class="btn" id="submitWhy" onclick="submitWhy()">Submit</button>
+    </div>
+
+    <img id="gif" alt="Reaction gif" />
+    <div id="finalMessage"></div>
+    <button class="btn" id="restartBtn" onclick="restartGame()">Try Again</button>
+  </div>
+
+  <div id="confetti"></div>
+
+  <script>
+    const questions = [
+      "Have you ever felt that we share something special?",
+      "Do you enjoy the little moments we spend together?",
+      "When we talk, do you feel happy and comfortable?",
+      "If I asked you to go on a date with me, would you say yes?",
+      "I think I’m falling for you... do you feel the same way?"
+    ];
+
+    const happyGif = "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif";
+    const sadGif = "https://media.giphy.com/media/9Y5BbDSkSTiY8/giphy.gif";
+
+    let current = 0;
+
+    const questionElem = document.getElementById("question");
+    const buttons = document.getElementById("buttons");
+    const whyBox = document.getElementById("whyBox");
+    const whyInput = document.getElementById("whyInput");
+    const finalMessage = document.getElementById("finalMessage");
+    const gif = document.getElementById("gif");
+    const restartBtn = document.getElementById("restartBtn");
+    const confettiContainer = document.getElementById("confetti");
+
+    // Show question with typing effect
+    function showQuestion(text) {
+      questionElem.classList.remove("typing");
+      questionElem.style.opacity = 0;
+      setTimeout(() => {
+        questionElem.innerText = text;
+        questionElem.style.opacity = 1;
+        questionElem.classList.add("typing");
+      }, 300);
+    }
+
+    function handleAnswer(isYes) {
+      if (isYes) {
+        current++;
+        if (current < questions.length) {
+          showQuestion(questions[current]);
+        } else {
+          // End of questions, happy ending
+          buttons.style.display = "none";
+          whyBox.style.display = "none";
+          showQuestion("Thank you for being so wonderful 💖");
+          finalMessage.innerText = "";
+          showGif(happyGif);
+          restartBtn.style.display = "inline-block";
+          startConfetti();
+        }
+      } else {
+        prepareWhy();
+      }
+    }
+
+    function prepareWhy() {
+      buttons.style.display = "none";
+      whyBox.style.display = "block";
+      finalMessage.innerText = "";
+      gif.style.display = "none";
+    }
+
+    function submitWhy() {
+      const reason = whyInput.value.trim();
+      if (!reason) {
+        alert("It’s okay to share your thoughts. Please type something.");
+        return;
+      }
+      whyBox.style.display = "none";
+      showQuestion("Thank you for being honest with me.");
+      finalMessage.innerText = `You said:\n${reason}`;
+      showGif(sadGif);
+      restartBtn.style.display = "inline-block";
+      stopConfetti();
+    }
+
+    function showGif(src) {
+      gif.src = src;
+      gif.style.display = "block";
+    }
+
+    function restartGame() {
+      current = 0;
+      showQuestion(questions[current]);
+      buttons.style.display = "block";
+      whyBox.style.display = "none";
+      gif.style.display = "none";
+      finalMessage.innerText = "";
+      restartBtn.style.display = "none";
+      whyInput.value = "";
+      stopConfetti();
+    }
+
+    // Generate floating hearts randomly on page
+    function createHearts() {
+      const count = 20;
+      for (let i = 0; i < count; i++) {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = (5 + Math.random() * 5) + "s";
+        heart.style.animationDelay = (Math.random() * 10) + "s";
+        heart.style.backgroundColor = `hsl(${330 + Math.random() * 30}, 80%, 85%)`;
+        heart.style.opacity = 0.6 + Math.random() * 0.4;
+        document.body.appendChild(heart);
+      }
+    }
+
+    // Confetti animation on happy ending
+    function startConfetti() {
+      confettiContainer.style.display = "block";
+      for(let i=0; i<100; i++) {
+        const confetti = document.createElement("div");
+        confetti.classList.add("confetti-piece");
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.backgroundColor = `hsl(${Math.random()*360}, 70%, 70%)`;
+        confetti.style.animationDuration = 3 + Math.random()*2 + "s";
+        confetti.style.animationDelay = (Math.random()*3) + "s";
+        confettiContainer.appendChild(confetti);
+      }
+      // Remove confetti after 5 seconds
+      setTimeout(() => {
+        confettiContainer.innerHTML = "";
+        confettiContainer.style.display = "none";
+      }, 5000);
+    }
+    function stopConfetti() {
+      confettiContainer.innerHTML = "";
+      confettiContainer.style.display = "none";
+    }
+
+    // Initialize
+    window.onload = () => {
+      createHearts();
+      showQuestion(questions[current]);
+    };
+  </script>
+</body>
+</html>
